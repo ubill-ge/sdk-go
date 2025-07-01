@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -26,7 +26,7 @@ type CreateBrandNameResponse struct {
 	StatusID int64 `json:"statusID"`
 	// Human-readable response message
 	Message *string `json:"message,omitempty"`
-	// Brand identifier
+	// Brand identifier as integer
 	BrandID *int64 `json:"brandID,omitempty"`
 }
 

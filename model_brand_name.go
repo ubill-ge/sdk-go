@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -20,12 +20,16 @@ import (
 // checks if the BrandName type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &BrandName{}
 
-// BrandName struct for BrandName
+// BrandName SMS brand name information
 type BrandName struct {
-	Id         string `json:"id"`
-	Name       string `json:"name"`
+	// Brand identifier
+	Id string `json:"id"`
+	// Brand name used as SMS sender
+	Name string `json:"name"`
+	// Authorization status
 	Authorized string `json:"authorized"`
-	CreatedAt  string `json:"createdAt"`
+	// Brand creation timestamp
+	CreatedAt string `json:"createdAt"`
 }
 
 type _BrandName BrandName

@@ -4,14 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Number** | Pointer to **string** |  | [optional] 
-**StatusID** | Pointer to **string** |  | [optional] 
+**Number** | **string** | Phone number as string | 
+**StatusID** | **string** | Delivery status as string | 
 
 ## Methods
 
 ### NewDeliveryReportItem
 
-`func NewDeliveryReportItem() *DeliveryReportItem`
+`func NewDeliveryReportItem(number string, statusID string, ) *DeliveryReportItem`
 
 NewDeliveryReportItem instantiates a new DeliveryReportItem object
 This constructor will assign default values to properties that have it defined,
@@ -45,11 +45,6 @@ and a boolean to check if the value has been set.
 
 SetNumber sets Number field to given value.
 
-### HasNumber
-
-`func (o *DeliveryReportItem) HasNumber() bool`
-
-HasNumber returns a boolean if a field has been set.
 
 ### GetStatusID
 
@@ -70,11 +65,6 @@ and a boolean to check if the value has been set.
 
 SetStatusID sets StatusID field to given value.
 
-### HasStatusID
-
-`func (o *DeliveryReportItem) HasStatusID() bool`
-
-HasStatusID returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

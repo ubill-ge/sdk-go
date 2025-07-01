@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -39,34 +39,6 @@ type SmsAPI interface {
 	CreateBrandNameExecute(r ApiCreateBrandNameRequest) (*CreateBrandNameResponse, *http.Response, error)
 
 	/*
-		GetBalance Get SMS Balance
-
-		Retrieve your current SMS balance, indicating how many messages you can send.
-
-		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-		@return ApiGetBalanceRequest
-	*/
-	GetBalance(ctx context.Context) ApiGetBalanceRequest
-
-	// GetBalanceExecute executes the request
-	//  @return SMSBalanceResponse
-	GetBalanceExecute(r ApiGetBalanceRequest) (*SMSBalanceResponse, *http.Response, error)
-
-	/*
-		GetBrandNames Get All Brand Names
-
-		Retrieve a list of all registered brand names associated with your account.
-
-		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-		@return ApiGetBrandNamesRequest
-	*/
-	GetBrandNames(ctx context.Context) ApiGetBrandNamesRequest
-
-	// GetBrandNamesExecute executes the request
-	//  @return BrandNamesResponse
-	GetBrandNamesExecute(r ApiGetBrandNamesRequest) (*BrandNamesResponse, *http.Response, error)
-
-	/*
 		GetDeliveryReport Get Delivery Report
 
 		Fetch the delivery status of a previously sent SMS using its unique identifier.
@@ -82,18 +54,46 @@ type SmsAPI interface {
 	GetDeliveryReportExecute(r ApiGetDeliveryReportRequest) (*DeliveryReportResponse, *http.Response, error)
 
 	/*
-		Send Send SMS
+		GetSMSBalance Get SMS Balance
+
+		Retrieve your current SMS balance, indicating how many messages you can send.
+
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@return ApiGetSMSBalanceRequest
+	*/
+	GetSMSBalance(ctx context.Context) ApiGetSMSBalanceRequest
+
+	// GetSMSBalanceExecute executes the request
+	//  @return SMSBalanceResponse
+	GetSMSBalanceExecute(r ApiGetSMSBalanceRequest) (*SMSBalanceResponse, *http.Response, error)
+
+	/*
+		ListBrandNames Get All Brand Names
+
+		Retrieve a list of all registered brand names associated with your account.
+
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@return ApiListBrandNamesRequest
+	*/
+	ListBrandNames(ctx context.Context) ApiListBrandNamesRequest
+
+	// ListBrandNamesExecute executes the request
+	//  @return BrandNamesResponse
+	ListBrandNamesExecute(r ApiListBrandNamesRequest) (*BrandNamesResponse, *http.Response, error)
+
+	/*
+		SendSMS Send SMS
 
 		Send SMS messages to one or multiple recipients using a registered brand name.
 
 		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-		@return ApiSendRequest
+		@return ApiSendSMSRequest
 	*/
-	Send(ctx context.Context) ApiSendRequest
+	SendSMS(ctx context.Context) ApiSendSMSRequest
 
-	// SendExecute executes the request
+	// SendSMSExecute executes the request
 	//  @return SendSMSResponse
-	SendExecute(r ApiSendRequest) (*SendSMSResponse, *http.Response, error)
+	SendSMSExecute(r ApiSendSMSRequest) (*SendSMSResponse, *http.Response, error)
 }
 
 // SmsAPIService SmsAPI service
@@ -102,12 +102,12 @@ type SmsAPIService service
 type ApiCreateBrandNameRequest struct {
 	ctx                    context.Context
 	ApiService             SmsAPI
-	createBrandNamePayload *CreateBrandNamePayload
+	createBrandNameRequest *CreateBrandNameRequest
 }
 
 // Brand Name payload to create
-func (r ApiCreateBrandNameRequest) CreateBrandNamePayload(createBrandNamePayload CreateBrandNamePayload) ApiCreateBrandNameRequest {
-	r.createBrandNamePayload = &createBrandNamePayload
+func (r ApiCreateBrandNameRequest) CreateBrandNameRequest(createBrandNameRequest CreateBrandNameRequest) ApiCreateBrandNameRequest {
+	r.createBrandNameRequest = &createBrandNameRequest
 	return r
 }
 
@@ -152,6 +152,9 @@ func (a *SmsAPIService) CreateBrandNameExecute(r ApiCreateBrandNameRequest) (*Cr
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
+	if r.createBrandNameRequest == nil {
+		return localVarReturnValue, nil, reportError("createBrandNameRequest is required and must be specified")
+	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -171,239 +174,11 @@ func (a *SmsAPIService) CreateBrandNameExecute(r ApiCreateBrandNameRequest) (*Cr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.createBrandNamePayload
+	localVarPostBody = r.createBrandNameRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["api_key"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarQueryParams.Add("key", key)
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiGetBalanceRequest struct {
-	ctx        context.Context
-	ApiService SmsAPI
-}
-
-func (r ApiGetBalanceRequest) Execute() (*SMSBalanceResponse, *http.Response, error) {
-	return r.ApiService.GetBalanceExecute(r)
-}
-
-/*
-GetBalance Get SMS Balance
-
-Retrieve your current SMS balance, indicating how many messages you can send.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiGetBalanceRequest
-*/
-func (a *SmsAPIService) GetBalance(ctx context.Context) ApiGetBalanceRequest {
-	return ApiGetBalanceRequest{
-		ApiService: a,
-		ctx:        ctx,
-	}
-}
-
-// Execute executes the request
-//
-//	@return SMSBalanceResponse
-func (a *SmsAPIService) GetBalanceExecute(r ApiGetBalanceRequest) (*SMSBalanceResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodGet
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *SMSBalanceResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SmsAPIService.GetBalance")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/sms/balance"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json", "text/plain"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["api_key"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarQueryParams.Add("key", key)
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiGetBrandNamesRequest struct {
-	ctx        context.Context
-	ApiService SmsAPI
-}
-
-func (r ApiGetBrandNamesRequest) Execute() (*BrandNamesResponse, *http.Response, error) {
-	return r.ApiService.GetBrandNamesExecute(r)
-}
-
-/*
-GetBrandNames Get All Brand Names
-
-Retrieve a list of all registered brand names associated with your account.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiGetBrandNamesRequest
-*/
-func (a *SmsAPIService) GetBrandNames(ctx context.Context) ApiGetBrandNamesRequest {
-	return ApiGetBrandNamesRequest{
-		ApiService: a,
-		ctx:        ctx,
-	}
-}
-
-// Execute executes the request
-//
-//	@return BrandNamesResponse
-func (a *SmsAPIService) GetBrandNamesExecute(r ApiGetBrandNamesRequest) (*BrandNamesResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod  = http.MethodGet
-		localVarPostBody    interface{}
-		formFiles           []formFile
-		localVarReturnValue *BrandNamesResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SmsAPIService.GetBrandNames")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/sms/brandNames"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json", "text/plain"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["api_key"]; ok {
+			if apiKey, ok := auth["apiKey"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -521,7 +296,7 @@ func (a *SmsAPIService) GetDeliveryReportExecute(r ApiGetDeliveryReportRequest) 
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["api_key"]; ok {
+			if apiKey, ok := auth["apiKey"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -569,32 +344,260 @@ func (a *SmsAPIService) GetDeliveryReportExecute(r ApiGetDeliveryReportRequest) 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiSendRequest struct {
+type ApiGetSMSBalanceRequest struct {
 	ctx        context.Context
 	ApiService SmsAPI
-	sMSPayload *SMSPayload
 }
 
-// SMS payload for sending messages
-func (r ApiSendRequest) SMSPayload(sMSPayload SMSPayload) ApiSendRequest {
-	r.sMSPayload = &sMSPayload
-	return r
-}
-
-func (r ApiSendRequest) Execute() (*SendSMSResponse, *http.Response, error) {
-	return r.ApiService.SendExecute(r)
+func (r ApiGetSMSBalanceRequest) Execute() (*SMSBalanceResponse, *http.Response, error) {
+	return r.ApiService.GetSMSBalanceExecute(r)
 }
 
 /*
-Send Send SMS
+GetSMSBalance Get SMS Balance
+
+Retrieve your current SMS balance, indicating how many messages you can send.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSMSBalanceRequest
+*/
+func (a *SmsAPIService) GetSMSBalance(ctx context.Context) ApiGetSMSBalanceRequest {
+	return ApiGetSMSBalanceRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SMSBalanceResponse
+func (a *SmsAPIService) GetSMSBalanceExecute(r ApiGetSMSBalanceRequest) (*SMSBalanceResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSBalanceResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SmsAPIService.GetSMSBalance")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/sms/balance"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/plain"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["apiKey"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarQueryParams.Add("key", key)
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListBrandNamesRequest struct {
+	ctx        context.Context
+	ApiService SmsAPI
+}
+
+func (r ApiListBrandNamesRequest) Execute() (*BrandNamesResponse, *http.Response, error) {
+	return r.ApiService.ListBrandNamesExecute(r)
+}
+
+/*
+ListBrandNames Get All Brand Names
+
+Retrieve a list of all registered brand names associated with your account.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListBrandNamesRequest
+*/
+func (a *SmsAPIService) ListBrandNames(ctx context.Context) ApiListBrandNamesRequest {
+	return ApiListBrandNamesRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return BrandNamesResponse
+func (a *SmsAPIService) ListBrandNamesExecute(r ApiListBrandNamesRequest) (*BrandNamesResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BrandNamesResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SmsAPIService.ListBrandNames")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/sms/brandNames"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/plain"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["apiKey"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarQueryParams.Add("key", key)
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiSendSMSRequest struct {
+	ctx            context.Context
+	ApiService     SmsAPI
+	sendSMSRequest *SendSMSRequest
+}
+
+// SMS payload for sending messages
+func (r ApiSendSMSRequest) SendSMSRequest(sendSMSRequest SendSMSRequest) ApiSendSMSRequest {
+	r.sendSMSRequest = &sendSMSRequest
+	return r
+}
+
+func (r ApiSendSMSRequest) Execute() (*SendSMSResponse, *http.Response, error) {
+	return r.ApiService.SendSMSExecute(r)
+}
+
+/*
+SendSMS Send SMS
 
 Send SMS messages to one or multiple recipients using a registered brand name.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiSendRequest
+	@return ApiSendSMSRequest
 */
-func (a *SmsAPIService) Send(ctx context.Context) ApiSendRequest {
-	return ApiSendRequest{
+func (a *SmsAPIService) SendSMS(ctx context.Context) ApiSendSMSRequest {
+	return ApiSendSMSRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -603,7 +606,7 @@ func (a *SmsAPIService) Send(ctx context.Context) ApiSendRequest {
 // Execute executes the request
 //
 //	@return SendSMSResponse
-func (a *SmsAPIService) SendExecute(r ApiSendRequest) (*SendSMSResponse, *http.Response, error) {
+func (a *SmsAPIService) SendSMSExecute(r ApiSendSMSRequest) (*SendSMSResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
@@ -611,7 +614,7 @@ func (a *SmsAPIService) SendExecute(r ApiSendRequest) (*SendSMSResponse, *http.R
 		localVarReturnValue *SendSMSResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SmsAPIService.Send")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SmsAPIService.SendSMS")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -621,6 +624,9 @@ func (a *SmsAPIService) SendExecute(r ApiSendRequest) (*SendSMSResponse, *http.R
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
+	if r.sendSMSRequest == nil {
+		return localVarReturnValue, nil, reportError("sendSMSRequest is required and must be specified")
+	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -640,11 +646,11 @@ func (a *SmsAPIService) SendExecute(r ApiSendRequest) (*SendSMSResponse, *http.R
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.sMSPayload
+	localVarPostBody = r.sendSMSRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["api_key"]; ok {
+			if apiKey, ok := auth["apiKey"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key

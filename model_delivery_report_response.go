@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -25,8 +25,9 @@ type DeliveryReportResponse struct {
 	// Response status code
 	StatusID int64 `json:"statusID"`
 	// Human-readable response message
-	Message *string              `json:"message,omitempty"`
-	Result  []DeliveryReportItem `json:"result,omitempty"`
+	Message *string `json:"message,omitempty"`
+	// Delivery report results
+	Result []DeliveryReportItem `json:"result,omitempty"`
 }
 
 type _DeliveryReportResponse DeliveryReportResponse
