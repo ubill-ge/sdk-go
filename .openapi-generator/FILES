@@ -33,4 +33,5 @@ model_send_sms_request.go
 model_send_sms_response.go
 model_sms_balance_response.go
 response.go
+test/api_sms_test.go
 utils.go
