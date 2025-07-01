@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -26,7 +26,8 @@ type SendSMSResponse struct {
 	StatusID int64 `json:"statusID"`
 	// Human-readable response message
 	Message *string `json:"message,omitempty"`
-	SmsID   *string `json:"smsID,omitempty"`
+	// SMS identifier as string
+	SmsID *string `json:"smsID,omitempty"`
 }
 
 type _SendSMSResponse SendSMSResponse

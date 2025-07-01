@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **StatusID** | **int64** | Response status code | 
 **Message** | Pointer to **string** | Human-readable response message | [optional] 
-**SmsID** | Pointer to **string** |  | [optional] 
+**SmsID** | Pointer to **string** | SMS identifier as string | [optional] 
 
 ## Methods
 

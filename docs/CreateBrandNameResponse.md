@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **StatusID** | **int64** | Response status code | 
 **Message** | Pointer to **string** | Human-readable response message | [optional] 
-**BrandID** | Pointer to **int64** | Brand identifier | [optional] 
+**BrandID** | Pointer to **int64** | Brand identifier as integer | [optional] 
 
 ## Methods
 

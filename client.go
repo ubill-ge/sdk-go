@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -41,7 +41,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the UBill API API v2.1.7
+// APIClient manages communication with the UBill API API v2.1.8
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration

@@ -5,16 +5,16 @@ All URIs are relative to *https://api.ubill.dev/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**CreateBrandName**](SmsAPI.md#CreateBrandName) | **Post** /sms/brandNameCreate | Create Brand Name
-[**GetBalance**](SmsAPI.md#GetBalance) | **Get** /sms/balance | Get SMS Balance
-[**GetBrandNames**](SmsAPI.md#GetBrandNames) | **Get** /sms/brandNames | Get All Brand Names
 [**GetDeliveryReport**](SmsAPI.md#GetDeliveryReport) | **Get** /sms/report/{smsID} | Get Delivery Report
-[**Send**](SmsAPI.md#Send) | **Post** /sms/send | Send SMS
+[**GetSMSBalance**](SmsAPI.md#GetSMSBalance) | **Get** /sms/balance | Get SMS Balance
+[**ListBrandNames**](SmsAPI.md#ListBrandNames) | **Get** /sms/brandNames | Get All Brand Names
+[**SendSMS**](SmsAPI.md#SendSMS) | **Post** /sms/send | Send SMS
 
 
 
 ## CreateBrandName
 
-> CreateBrandNameResponse CreateBrandName(ctx).CreateBrandNamePayload(createBrandNamePayload).Execute()
+> CreateBrandNameResponse CreateBrandName(ctx).CreateBrandNameRequest(createBrandNameRequest).Execute()
 
 Create Brand Name
 
@@ -33,11 +33,11 @@ import (
 )
 
 func main() {
-	createBrandNamePayload := *openapiclient.NewCreateBrandNamePayload("ubill-info") // CreateBrandNamePayload | Brand Name payload to create (optional)
+	createBrandNameRequest := *openapiclient.NewCreateBrandNameRequest("ubill-info") // CreateBrandNameRequest | Brand Name payload to create
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.SmsAPI.CreateBrandName(context.Background()).CreateBrandNamePayload(createBrandNamePayload).Execute()
+	resp, r, err := apiClient.SmsAPI.CreateBrandName(context.Background()).CreateBrandNameRequest(createBrandNameRequest).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.CreateBrandName``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -58,7 +58,7 @@ Other parameters are passed through a pointer to a apiCreateBrandNameRequest str
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createBrandNamePayload** | [**CreateBrandNamePayload**](CreateBrandNamePayload.md) | Brand Name payload to create | 
+ **createBrandNameRequest** | [**CreateBrandNameRequest**](CreateBrandNameRequest.md) | Brand Name payload to create | 
 
 ### Return type
 
@@ -66,133 +66,11 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_key](../README.md#api_key)
+[apiKey](../README.md#apiKey)
 
 ### HTTP request headers
 
 - **Content-Type**: application/json
-- **Accept**: application/json, text/plain
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## GetBalance
-
-> SMSBalanceResponse GetBalance(ctx).Execute()
-
-Get SMS Balance
-
-
-
-### Example
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-	openapiclient "github.com/ubill-ge/sdk-go"
-)
-
-func main() {
-
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.SmsAPI.GetBalance(context.Background()).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.GetBalance``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-	}
-	// response from `GetBalance`: SMSBalanceResponse
-	fmt.Fprintf(os.Stdout, "Response from `SmsAPI.GetBalance`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-This endpoint does not need any parameter.
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiGetBalanceRequest struct via the builder pattern
-
-
-### Return type
-
-[**SMSBalanceResponse**](SMSBalanceResponse.md)
-
-### Authorization
-
-[api_key](../README.md#api_key)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json, text/plain
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## GetBrandNames
-
-> BrandNamesResponse GetBrandNames(ctx).Execute()
-
-Get All Brand Names
-
-
-
-### Example
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-	openapiclient "github.com/ubill-ge/sdk-go"
-)
-
-func main() {
-
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.SmsAPI.GetBrandNames(context.Background()).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.GetBrandNames``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-	}
-	// response from `GetBrandNames`: BrandNamesResponse
-	fmt.Fprintf(os.Stdout, "Response from `SmsAPI.GetBrandNames`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-This endpoint does not need any parameter.
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiGetBrandNamesRequest struct via the builder pattern
-
-
-### Return type
-
-[**BrandNamesResponse**](BrandNamesResponse.md)
-
-### Authorization
-
-[api_key](../README.md#api_key)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
 - **Accept**: application/json, text/plain
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -258,7 +136,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_key](../README.md#api_key)
+[apiKey](../README.md#apiKey)
 
 ### HTTP request headers
 
@@ -270,9 +148,131 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
-## Send
+## GetSMSBalance
 
-> SendSMSResponse Send(ctx).SMSPayload(sMSPayload).Execute()
+> SMSBalanceResponse GetSMSBalance(ctx).Execute()
+
+Get SMS Balance
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/ubill-ge/sdk-go"
+)
+
+func main() {
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.SmsAPI.GetSMSBalance(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.GetSMSBalance``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetSMSBalance`: SMSBalanceResponse
+	fmt.Fprintf(os.Stdout, "Response from `SmsAPI.GetSMSBalance`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetSMSBalanceRequest struct via the builder pattern
+
+
+### Return type
+
+[**SMSBalanceResponse**](SMSBalanceResponse.md)
+
+### Authorization
+
+[apiKey](../README.md#apiKey)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json, text/plain
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## ListBrandNames
+
+> BrandNamesResponse ListBrandNames(ctx).Execute()
+
+Get All Brand Names
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/ubill-ge/sdk-go"
+)
+
+func main() {
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.SmsAPI.ListBrandNames(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.ListBrandNames``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `ListBrandNames`: BrandNamesResponse
+	fmt.Fprintf(os.Stdout, "Response from `SmsAPI.ListBrandNames`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiListBrandNamesRequest struct via the builder pattern
+
+
+### Return type
+
+[**BrandNamesResponse**](BrandNamesResponse.md)
+
+### Authorization
+
+[apiKey](../README.md#apiKey)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json, text/plain
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## SendSMS
+
+> SendSMSResponse SendSMS(ctx).SendSMSRequest(sendSMSRequest).Execute()
 
 Send SMS
 
@@ -291,17 +291,17 @@ import (
 )
 
 func main() {
-	sMSPayload := *openapiclient.NewSMSPayload(int64(1), []int64{int64(995511194241)}, "Hello", false) // SMSPayload | SMS payload for sending messages (optional)
+	sendSMSRequest := *openapiclient.NewSendSMSRequest(int64(1), []int64{int64(995511194241)}, "Hello", false) // SendSMSRequest | SMS payload for sending messages
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.SmsAPI.Send(context.Background()).SMSPayload(sMSPayload).Execute()
+	resp, r, err := apiClient.SmsAPI.SendSMS(context.Background()).SendSMSRequest(sendSMSRequest).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.Send``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `SmsAPI.SendSMS``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `Send`: SendSMSResponse
-	fmt.Fprintf(os.Stdout, "Response from `SmsAPI.Send`: %v\n", resp)
+	// response from `SendSMS`: SendSMSResponse
+	fmt.Fprintf(os.Stdout, "Response from `SmsAPI.SendSMS`: %v\n", resp)
 }
 ```
 
@@ -311,12 +311,12 @@ func main() {
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiSendRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiSendSMSRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sMSPayload** | [**SMSPayload**](SMSPayload.md) | SMS payload for sending messages | 
+ **sendSMSRequest** | [**SendSMSRequest**](SendSMSRequest.md) | SMS payload for sending messages | 
 
 ### Return type
 
@@ -324,7 +324,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_key](../README.md#api_key)
+[apiKey](../README.md#apiKey)
 
 ### HTTP request headers
 

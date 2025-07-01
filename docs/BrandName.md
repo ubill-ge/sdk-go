@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** |  | 
-**Name** | **string** |  | 
-**Authorized** | **string** |  | 
-**CreatedAt** | **string** |  | 
+**Id** | **string** | Brand identifier | 
+**Name** | **string** | Brand name used as SMS sender | 
+**Authorized** | **string** | Authorization status | 
+**CreatedAt** | **string** | Brand creation timestamp | 
 
 ## Methods
 

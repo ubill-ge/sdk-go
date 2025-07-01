@@ -3,7 +3,7 @@ UBill API
 
 UBill API - provides programmatic access to our resources. You will be able to integrate our service into your system and communicate with clients easily.
 
-API version: 2.1.7
+API version: 2.1.8
 Contact: info@ubill.ge
 */
 
@@ -12,24 +12,32 @@ Contact: info@ubill.ge
 package ubill
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the DeliveryReportItem type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &DeliveryReportItem{}
 
-// DeliveryReportItem struct for DeliveryReportItem
+// DeliveryReportItem SMS delivery status for a phone number
 type DeliveryReportItem struct {
-	Number   *string `json:"number,omitempty"`
-	StatusID *string `json:"statusID,omitempty"`
+	// Phone number as string
+	Number string `json:"number"`
+	// Delivery status as string
+	StatusID string `json:"statusID"`
 }
+
+type _DeliveryReportItem DeliveryReportItem
 
 // NewDeliveryReportItem instantiates a new DeliveryReportItem object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeliveryReportItem() *DeliveryReportItem {
+func NewDeliveryReportItem(number string, statusID string) *DeliveryReportItem {
 	this := DeliveryReportItem{}
+	this.Number = number
+	this.StatusID = statusID
 	return &this
 }
 
@@ -41,68 +49,52 @@ func NewDeliveryReportItemWithDefaults() *DeliveryReportItem {
 	return &this
 }
 
-// GetNumber returns the Number field value if set, zero value otherwise.
+// GetNumber returns the Number field value
 func (o *DeliveryReportItem) GetNumber() string {
-	if o == nil || IsNil(o.Number) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Number
+
+	return o.Number
 }
 
-// GetNumberOk returns a tuple with the Number field value if set, nil otherwise
+// GetNumberOk returns a tuple with the Number field value
 // and a boolean to check if the value has been set.
 func (o *DeliveryReportItem) GetNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.Number) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Number, true
+	return &o.Number, true
 }
 
-// HasNumber returns a boolean if a field has been set.
-func (o *DeliveryReportItem) HasNumber() bool {
-	if o != nil && !IsNil(o.Number) {
-		return true
-	}
-
-	return false
-}
-
-// SetNumber gets a reference to the given string and assigns it to the Number field.
+// SetNumber sets field value
 func (o *DeliveryReportItem) SetNumber(v string) {
-	o.Number = &v
+	o.Number = v
 }
 
-// GetStatusID returns the StatusID field value if set, zero value otherwise.
+// GetStatusID returns the StatusID field value
 func (o *DeliveryReportItem) GetStatusID() string {
-	if o == nil || IsNil(o.StatusID) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.StatusID
+
+	return o.StatusID
 }
 
-// GetStatusIDOk returns a tuple with the StatusID field value if set, nil otherwise
+// GetStatusIDOk returns a tuple with the StatusID field value
 // and a boolean to check if the value has been set.
 func (o *DeliveryReportItem) GetStatusIDOk() (*string, bool) {
-	if o == nil || IsNil(o.StatusID) {
+	if o == nil {
 		return nil, false
 	}
-	return o.StatusID, true
+	return &o.StatusID, true
 }
 
-// HasStatusID returns a boolean if a field has been set.
-func (o *DeliveryReportItem) HasStatusID() bool {
-	if o != nil && !IsNil(o.StatusID) {
-		return true
-	}
-
-	return false
-}
-
-// SetStatusID gets a reference to the given string and assigns it to the StatusID field.
+// SetStatusID sets field value
 func (o *DeliveryReportItem) SetStatusID(v string) {
-	o.StatusID = &v
+	o.StatusID = v
 }
 
 func (o DeliveryReportItem) MarshalJSON() ([]byte, error) {
@@ -115,13 +107,47 @@ func (o DeliveryReportItem) MarshalJSON() ([]byte, error) {
 
 func (o DeliveryReportItem) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Number) {
-		toSerialize["number"] = o.Number
-	}
-	if !IsNil(o.StatusID) {
-		toSerialize["statusID"] = o.StatusID
-	}
+	toSerialize["number"] = o.Number
+	toSerialize["statusID"] = o.StatusID
 	return toSerialize, nil
+}
+
+func (o *DeliveryReportItem) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"number",
+		"statusID",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varDeliveryReportItem := _DeliveryReportItem{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varDeliveryReportItem)
+
+	if err != nil {
+		return err
+	}
+
+	*o = DeliveryReportItem(varDeliveryReportItem)
+
+	return err
 }
 
 type NullableDeliveryReportItem struct {
